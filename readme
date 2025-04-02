@@ -1,0 +1,128 @@
+git clone https://github.com/seu-usuario/seu-repositorio.git
+cd seu-repositorio
+* 2 Crie um Ambiente Virtual *
+
+python -m venv venv
+
+* Ative o ambiente virtual: *
+
+Windows: venv\Scripts\activate
+
+Linux/Mac: source venv/bin/activate
+
+
+* 3 Instale as Dependências *
+
+pip install -r requirements.txt
+
+
+
+* 4 Configuração do Banco de Dados *
+
+Crie um banco de dados no PostgreSQL:
+
+CREATE DATABASE name_bd (nome do seu banco de dados);
+CREATE USER usuario_bd (nome do usuario do seu banco de dados) WITH PASSWORD 'tent01';
+ALTER ROLE usuario_bd SET client_encoding TO 'utf8';
+ALTER ROLE usuario_bd SET default_transaction_isolation TO 'read committed';
+ALTER ROLE usuario_bd SET timezone TO 'UTC';
+GRANT ALL PRIVILEGES ON DATABASE name_bd TO usuario_bd;
+
+
+* Configure o arquivo .env com as credenciais do banco: *
+
+DEBUG=True
+SECRET_KEY=django-insecure-12345
+DATABASE_NAME=todo_db
+DATABASE_USER=todo_user
+DATABASE_PASSWORD=tent01
+DATABASE_HOST=localhost
+DATABASE_PORT=5432
+
+* 5 Rodar Migrações *
+
+python manage.py makemigrations (tasks, users)
+python manage.py migrate
+
+* 6 Criar Superusuário *
+
+python manage.py createsuperuser
+
+
+* 7 Rodar o Servidor * 
+
+python manage.py runserver
+
+
+Endpoints da API
+A API suporta os seguintes endpoints para autenticação JWT:
+
+🔹 Registro de Usuário
+* 📌 POST /api/register/ *
+
+{
+    "username": "usuario",
+    "email": "email@email.com",
+    "password": "senha123"
+}
+
+🔹 Login e Obtenção de Token JWT
+* 📌 POST /api/token/ *
+
+{
+    "username": "usuario",
+    "password": "senha123"
+}
+
+Resposta:
+{
+    "access": "token_jwt_aqui",
+    "refresh": "refresh_token_aqui"
+}
+
+
+🔹 Refresh Token
+* 📌 POST /api/token/refresh/ *
+
+{
+    "refresh": "refresh_token_aqui"
+}
+🔹 Logout
+* 📌 POST /api/logout/ *
+ 
+{
+    "refresh": "refresh_token_aqui"
+}
+
+Os endpoints acima estão tendo problema, pois eu não consegui fazer a criação do token do jwt.
+No entanto, não tenho os testes da parte de token.
+
+tem o endpoint do Django ADMIM, que é necessario ter um login de "superuser" criado para conseguir entrar. Dentro dele da para fazer a criação de
+Grupos e usuarios, tendo como alterar, excluir, adicionar(tanto nos grupos quanto nos usuarios). Na parte dos grupos, tem como os usuarios serem encarregados de fazer alguma tarefa dentro
+do proprio grupo. 
+ 
+Se der algum erro na parte do database_User na hora de migrar os arquivos utilize este codigo no CMD como ADMIN:
+
+    Windows\Linux\Mac:
+ -U postgres -d nome_do_banco_de_dados (embixo depois de colocar o codigo irá pedir a senha do seu bd)  
+
+
+    GRANT CONNECT ON DATABASE name_bd TO usuario_bd; (utilizar o nome_usuario do seu banco de dados)
+    GRANT USAGE ON SCHEMA public TO usuario_bd;
+    GRANT CREATE ON SCHEMA public TO usuario_bd;
+    GRANT ALL PRIVILEGES ON SCHEMA public TO usuario_bd;
+    ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO usuario_bd;
+    ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO usuario_bd;    
+
+
+* Tecnologias Utilizadas *
+
+Django 4+
+
+Django REST Framework
+
+SimpleJWT (JSON Web Token)
+
+PostgreSQL
+
+Python 3.9+
